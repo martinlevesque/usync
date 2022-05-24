@@ -1,15 +1,17 @@
 
 package main
-  
+
 import (
 	"fmt"
-	"github.com/martinlevesque/usync/io/in/test"
+	"github.com/martinlevesque/usync/io/in"
 )
   
 // Main function
 func main() {
 
-	test.hello()
+	//in.Hello()
+	fReader := in.FileReader{}
+	fReader.Read()
   
     fmt.Println("!... Hello World ...!")
 }
