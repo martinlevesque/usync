@@ -6,9 +6,11 @@ import (
 )
 
 type FileReader struct {
-	dummy string
+	Reader
 }
 
-func (r FileReader) Read() {
+func (r FileReader) Read() Reading {
     fmt.Println("file reading...")
+
+    return Reading { Uri: r.Uri, Content: []byte {1,2} }
 }

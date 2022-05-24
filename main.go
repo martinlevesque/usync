@@ -10,8 +10,10 @@ import (
 func main() {
 
 	//in.Hello()
-	fReader := in.FileReader{}
-	fReader.Read()
+	var reader in.IReader
+	reader = in.FileReader{ in.Reader { Uri: "/usr/bin/what" } }
+	reading := reader.Read()
   
     fmt.Println("!... Hello World ...!")
+    fmt.Println(reading)
 }
