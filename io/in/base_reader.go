@@ -11,9 +11,9 @@ type Reading struct {
 }
 
 type IReader interface {
-    Read() Reading
+    Read() (*Reading, string)
 }
 
-func (b *Reader) Read() Reading {
-	return Reading{}
+func (b *Reader) Read() (*Reading, string) {
+	return &Reading{}, ""
 }
