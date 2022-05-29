@@ -7,25 +7,31 @@ import (
 	"log"
 )
 
-const STREAM_BLOCK_SIZE int = 10
+const STREAM_BLOCK_SIZE int = 1000000
 
 type FileReader struct {
 	Reader
 	FilePtr *os.File
 	Index int64
+	ByteBlock []byte
 }
 
 func (reader *FileReader) Read() (*Reading, string) {
-	file, err := os.Open(reader.Uri)
-	reader.FilePtr = file
 
-	if err != nil {
-		log.Fatal(err)
+	if reader.FilePtr == nil {
+		file, err := os.Open(reader.Uri)
+		reader.FilePtr = file
+		reader.ByteBlock = make([]byte, STREAM_BLOCK_SIZE)
+
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	reading := Reading { Uri: reader.Uri, Content: make([]byte, STREAM_BLOCK_SIZE) }
+	reading := Reading { Uri: reader.Uri, Content: reader.ByteBlock }
 
-	count, err := file.ReadAt(reading.Content, reader.Index)
+	count, err := reader.FilePtr.ReadAt(reading.Content, reader.Index)
+	reading.Length = int64(count)
 
 	if count == 0 {
 		return &reading, "EOF"

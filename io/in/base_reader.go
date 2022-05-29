@@ -8,6 +8,7 @@ type Reader struct {
 type Reading struct {
     Uri string
     Content []byte
+    Length int64
 }
 
 type IReader interface {
