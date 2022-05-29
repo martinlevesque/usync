@@ -1,6 +1,8 @@
 
 package in
 
+const STREAM_BLOCK_SIZE int = 1000000
+
 type Reader struct {
 	Uri string
 }

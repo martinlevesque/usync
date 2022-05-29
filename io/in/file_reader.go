@@ -7,7 +7,6 @@ import (
 	"log"
 )
 
-const STREAM_BLOCK_SIZE int = 1000000
 
 type FileReader struct {
 	Reader
