@@ -1,6 +1,12 @@
 # usync
 
-# streams
+## Protocol
+
+filename
+Number of bytes
+[bytes]
+
+## streams
 
 stdin -> stdout
 file -> stdout

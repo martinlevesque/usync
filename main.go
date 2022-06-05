@@ -12,6 +12,7 @@ import (
 
 type CommandArgs struct {
 	stdin bool
+	stdout bool
     input_type string
     input_filepath string
     output_filepath string
@@ -19,6 +20,7 @@ type CommandArgs struct {
 
 func (args *CommandArgs) ParseArgs() {
 	flag.BoolVar(&args.stdin, "stdin", false, "Stream content from stdin.")
+	flag.BoolVar(&args.stdout, "stdout", false, "Stream content to stdout.")
 	flag.StringVar(&args.input_filepath, "in-file", "", "Input filepath (file).")
 	flag.StringVar(&args.output_filepath, "out-file", "", "Output filepath (file).")
 
@@ -34,8 +36,7 @@ func (args *CommandArgs) ParseArgs() {
 	}
 
 	// requires OUT
-	log.Println(args.output_filepath)
-	if len(args.output_filepath) == 0 {
+	if len(args.output_filepath) == 0 && ! args.stdout {
 		flag.Usage()
 		log.Fatal("Invalid command line arguments, requires an output parameter")
 	}
@@ -58,7 +59,13 @@ func main() {
 	}
 
 	var writer out.IWriter
-	writer = &out.FileWriter{ Writer: out.Writer { Uri: args.output_filepath } }
+
+	if args.stdout {
+		writer = &out.StdoutWriter{ Writer: out.Writer { Uri: args.output_filepath } }
+	} else {
+		writer = &out.FileWriter{ Writer: out.Writer { Uri: args.output_filepath } }
+	}
+	
 
 	for {
 		reading, state := reader.Read()

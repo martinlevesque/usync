@@ -24,14 +24,12 @@ func (writer *FileWriter) Write(bytes []byte) (*Writing, string) {
 		}
 	}
 
-	_, err := writer.FilePtr.Write(bytes)
+	count, err := writer.FilePtr.Write(bytes)
+	writing := Writing { Uri: writer.Uri, BytesWritten: int64(count) }
 
 	if err != nil {
-		return nil, err.Error()
+		return &writing, err.Error()
 	}
 
-	// fmt.Println("n read:")
-	// fmt.Println(n)
-
-	return nil, ""
+	return &writing, ""
 }
