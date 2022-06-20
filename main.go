@@ -10,18 +10,24 @@ import (
 	// "time"
 )
 
+const INVALID_IN_NET_PORT = -1
+
 type CommandArgs struct {
 	stdin bool
 	stdout bool
     input_type string
     input_filepath string
     output_filepath string
+
+    in_net_port int
 }
 
 func (args *CommandArgs) ParseArgs() {
 	flag.BoolVar(&args.stdin, "stdin", false, "Stream content from stdin.")
-	flag.BoolVar(&args.stdout, "stdout", false, "Stream content to stdout.")
 	flag.StringVar(&args.input_filepath, "in-file", "", "Input filepath (file).")
+	flag.IntVar(&args.in_net_port, "in-net-port", INVALID_IN_NET_PORT, "UDP in port")
+
+	flag.BoolVar(&args.stdout, "stdout", false, "Stream content to stdout.")
 	flag.StringVar(&args.output_filepath, "out-file", "", "Output filepath (file).")
 
 
@@ -30,7 +36,7 @@ func (args *CommandArgs) ParseArgs() {
 	// validate arguments
 
 	// requires IN
-	if len(args.input_filepath) == 0 && ! args.stdin {
+	if len(args.input_filepath) == 0 && ! args.stdin && args.in_net_port == INVALID_IN_NET_PORT {
 		flag.Usage()
 		log.Fatal("Invalid command line arguments, requires an input parameter")
 	}
@@ -54,6 +60,8 @@ func main() {
 
 	if args.stdin {
 		reader = &in.StdinReader{ Reader: in.Reader { Uri: "" } }
+	} else if args.in_net_port != INVALID_IN_NET_PORT {
+		reader = &in.NetReader{ Reader: in.Reader { Uri: args.input_filepath }, Port: args.in_net_port }
 	} else {
 		reader = &in.FileReader{ Reader: in.Reader { Uri: args.input_filepath }, Index: 0 }
 	}
@@ -77,10 +85,6 @@ func main() {
 			log.Fatal(state)
 		}
 
-	    
 	    writer.Write(reading.Content[0:reading.Length])
 	}
-
-	// elapsed := time.Since(start)
-    // log.Printf("took %s", elapsed)
 }
