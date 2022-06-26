@@ -1,14 +1,12 @@
-
 package out
 
 import (
 	// "fmt"
-	"os"
 	"log"
+	"os"
 )
 
-const STREAM_BLOCK_SIZE int = 1000000
-
+// FileWriter -
 type FileWriter struct {
 	Writer
 	FilePtr *os.File
@@ -16,7 +14,7 @@ type FileWriter struct {
 
 func (writer *FileWriter) Write(bytes []byte) (*Writing, string) {
 	if writer.FilePtr == nil {
-		file, err := os.Create(writer.Uri)
+		file, err := os.Create(writer.URI)
 		writer.FilePtr = file
 
 		if err != nil {
@@ -25,7 +23,7 @@ func (writer *FileWriter) Write(bytes []byte) (*Writing, string) {
 	}
 
 	count, err := writer.FilePtr.Write(bytes)
-	writing := Writing { Uri: writer.Uri, BytesWritten: int64(count) }
+	writing := Writing{URI: writer.URI, BytesWritten: int64(count)}
 
 	if err != nil {
 		return &writing, err.Error()

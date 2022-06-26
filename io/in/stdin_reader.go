@@ -1,27 +1,26 @@
-
 package in
 
 import (
 	// "fmt"
 	"bufio"
-	"os"
 	"io"
+	"os"
 )
 
 type StdinReader struct {
 	Reader
-	ByteBlock []byte
+	ByteBlock        []byte
 	BlockInitialized bool
 }
 
 func (reader *StdinReader) Read() (*Reading, string) {
 
-	if ! reader.BlockInitialized {
-		reader.ByteBlock = make([]byte, STREAM_BLOCK_SIZE)
+	if !reader.BlockInitialized {
+		reader.ByteBlock = make([]byte, StreamBlockSize)
 		reader.BlockInitialized = true
 	}
 
-	reading := Reading { Uri: "", Content: reader.ByteBlock }
+	reading := Reading{URI: "", Content: reader.ByteBlock}
 
 	bufReader := bufio.NewReader(os.Stdin)
 	count, err := bufReader.Read(reader.ByteBlock)
@@ -35,5 +34,5 @@ func (reader *StdinReader) Read() (*Reading, string) {
 		return &reading, err.Error()
 	}
 
-    return &reading, ""
+	return &reading, ""
 }

@@ -1,22 +1,22 @@
-
 package in
 
 import (
 	"fmt"
-	"net"
 	"log"
+	"net"
 )
 
+// NetReader -
 type NetReader struct {
 	Reader
-	ByteBlock []byte
-	Port int
+	ByteBlock    []byte
+	Port         int
 	ConnListener net.Listener
-	CurrentConn net.Conn
-	Initialized bool
+	CurrentConn  net.Conn
+	Initialized  bool
 }
 
-func (reader *NetReader) InitializeServer () {
+func (reader *NetReader) initializeServer() {
 	log.Println("Will listen on port")
 	listener, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", reader.Port))
 	log.Println("Should listen")
@@ -42,16 +42,16 @@ func (reader *NetReader) InitializeServer () {
 
 func (reader *NetReader) Read() (*Reading, string) {
 
-	if ! reader.Initialized {
-		reader.ByteBlock = make([]byte, STREAM_BLOCK_SIZE)
-		reader.InitializeServer()
+	if !reader.Initialized {
+		reader.ByteBlock = make([]byte, StreamBlockSize)
+		reader.initializeServer()
 		reader.Initialized = true
 	}
 
 	// TODO make it accept connections
 
-	reading := Reading { Uri: "", Content: reader.ByteBlock }
-	
+	reading := Reading{URI: "", Content: reader.ByteBlock}
+
 	rlen, err := reader.CurrentConn.Read(reader.ByteBlock)
 	reading.Length = int64(rlen)
 
@@ -63,5 +63,5 @@ func (reader *NetReader) Read() (*Reading, string) {
 		panic(err)
 	}
 
-    return &reading, ""
+	return &reading, ""
 }

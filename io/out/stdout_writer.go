@@ -1,4 +1,3 @@
-
 package out
 
 import (
@@ -18,11 +17,11 @@ func (writer *StdoutWriter) Write(bytes []byte) (*Writing, string) {
 	defer bufWriter.Flush()
 	count, err := bufWriter.Write(bytes)
 
-	writing := Writing { Uri: writer.Uri, BytesWritten: int64(count) }
+	writing := Writing{URI: writer.URI, BytesWritten: int64(count)}
 
 	if err != nil {
 		return &writing, err.Error()
 	}
 
-    return &writing, ""
+	return &writing, ""
 }

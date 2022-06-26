@@ -1,17 +1,19 @@
-
 package out
 
+// Writer base object
 type Writer struct {
-	Uri string
+	URI string
 }
 
+// Writing - used to described the state of writes
 type Writing struct {
-    Uri string
-    BytesWritten int64
+	URI          string // NOLINT
+	BytesWritten int64
 }
 
+// IWriter -
 type IWriter interface {
-    Write(bytes []byte) (*Writing, string)
+	Write(bytes []byte) (*Writing, string)
 }
 
 func (writer *Writer) Write() (*Writing, string) {
