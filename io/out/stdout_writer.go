@@ -7,6 +7,7 @@ import (
 	// "io"
 )
 
+// StdoutWriter -
 type StdoutWriter struct {
 	Writer
 }

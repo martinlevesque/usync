@@ -13,35 +13,35 @@ import (
 const invalidInNetPort = -1
 
 type commandArgs struct {
-	stdin           bool
-	stdout          bool
-	input_type      string
-	input_filepath  string
-	output_filepath string
+	stdin          bool
+	stdout         bool
+	inputType      string
+	inputFilepath  string
+	outputFilepath string
 
-	in_net_port int
+	inNetPort int
 }
 
 func (args *commandArgs) ParseArgs() {
 	flag.BoolVar(&args.stdin, "stdin", false, "Stream content from stdin.")
-	flag.StringVar(&args.input_filepath, "in-file", "", "Input filepath (file).")
-	flag.IntVar(&args.in_net_port, "in-net-port", invalidInNetPort, "UDP in port")
+	flag.StringVar(&args.inputFilepath, "in-file", "", "Input filepath (file).")
+	flag.IntVar(&args.inNetPort, "in-net-port", invalidInNetPort, "UDP in port")
 
 	flag.BoolVar(&args.stdout, "stdout", false, "Stream content to stdout.")
-	flag.StringVar(&args.output_filepath, "out-file", "", "Output filepath (file).")
+	flag.StringVar(&args.outputFilepath, "out-file", "", "Output filepath (file).")
 
 	flag.Parse()
 
 	// validate arguments
 
 	// requires IN
-	if len(args.input_filepath) == 0 && !args.stdin && args.in_net_port == invalidInNetPort {
+	if len(args.inputFilepath) == 0 && !args.stdin && args.inNetPort == invalidInNetPort {
 		flag.Usage()
 		log.Fatal("Invalid command line arguments, requires an input parameter")
 	}
 
 	// requires OUT
-	if len(args.output_filepath) == 0 && !args.stdout {
+	if len(args.outputFilepath) == 0 && !args.stdout {
 		flag.Usage()
 		log.Fatal("Invalid command line arguments, requires an output parameter")
 	}
@@ -59,18 +59,18 @@ func main() {
 
 	if args.stdin {
 		reader = &in.StdinReader{Reader: in.Reader{URI: ""}}
-	} else if args.in_net_port != invalidInNetPort {
-		reader = &in.NetReader{Reader: in.Reader{URI: args.input_filepath}, Port: args.in_net_port}
+	} else if args.inNetPort != invalidInNetPort {
+		reader = &in.NetReader{Reader: in.Reader{URI: args.inputFilepath}, Port: args.inNetPort}
 	} else {
-		reader = &in.FileReader{Reader: in.Reader{URI: args.input_filepath}, Index: 0}
+		reader = &in.FileReader{Reader: in.Reader{URI: args.inputFilepath}, Index: 0}
 	}
 
 	var writer out.IWriter
 
 	if args.stdout {
-		writer = &out.StdoutWriter{Writer: out.Writer{URI: args.output_filepath}}
+		writer = &out.StdoutWriter{Writer: out.Writer{URI: args.outputFilepath}}
 	} else {
-		writer = &out.FileWriter{Writer: out.Writer{URI: args.output_filepath}}
+		writer = &out.FileWriter{Writer: out.Writer{URI: args.outputFilepath}}
 	}
 
 	for {
