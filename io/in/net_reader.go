@@ -19,7 +19,6 @@ type NetReader struct {
 func (reader *NetReader) initializeServer() {
 	log.Println("Will listen on port")
 	listener, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", reader.Port))
-	log.Println("Should listen")
 	reader.ConnListener = listener
 
 	defer listener.Close()
@@ -28,9 +27,7 @@ func (reader *NetReader) initializeServer() {
 		log.Fatal(err)
 	}
 
-	log.Println("accepting...")
 	conn, errAccept := listener.Accept()
-	log.Println("accepted.")
 	reader.CurrentConn = conn
 
 	if errAccept != nil {
@@ -56,11 +53,13 @@ func (reader *NetReader) Read() (*Reading, string) {
 	reading.Length = int64(rlen)
 
 	if rlen == 0 {
-		return &reading, "EOF"
+		reader.Initialized = false
+		return &reading, "EOC"
 	}
 
 	if err != nil {
-		panic(err)
+		reader.Initialized = false
+		return &reading, "EOC"
 	}
 
 	return &reading, ""

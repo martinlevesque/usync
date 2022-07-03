@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "fmt"
 	"flag"
 	"log"
 
@@ -56,11 +55,13 @@ func main() {
 	args.ParseArgs()
 
 	var reader in.IReader
+	readerType := ""
 
 	if args.stdin {
 		reader = &in.StdinReader{Reader: in.Reader{URI: ""}}
 	} else if args.inNetPort != invalidInNetPort {
 		reader = &in.NetReader{Reader: in.Reader{URI: args.inputFilepath}, Port: args.inNetPort}
+		readerType = "net"
 	} else {
 		reader = &in.FileReader{Reader: in.Reader{URI: args.inputFilepath}, Index: 0}
 	}
@@ -76,9 +77,10 @@ func main() {
 	for {
 		reading, state := reader.Read()
 
-		if state == "EOF" {
+		if state == "EOF" && readerType != "net" {
 			writer.Write(reading.Content[0:reading.Length])
 			break
+		} else if state == "EOC" && readerType == "net" {
 		} else if state != "" {
 			log.Fatal(state)
 		}
